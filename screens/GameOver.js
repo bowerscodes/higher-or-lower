@@ -1,5 +1,5 @@
 // Global imports
-import { StyleSheet, Image, Text, View } from 'react-native';
+import { StyleSheet, Image, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 
 // Local imports
 import Title from '../components/ui/Title';
@@ -8,23 +8,47 @@ import Colors from '../constants/colors';
 
 
 const GameOverScreen = ({ roundsNumber, userNumber, onStartNewGame }) => {
+
+  const { width, height } = useWindowDimensions();
+
+  let imageSize = 300;
+
+  if (width < 380) {
+    imageSize = 150;
+  }
+  if (height < 400) {
+    imageSize = 80;
+  }
+
+  const imageStyle = {
+    width: imageSize,
+    height: imageSize,
+    borderRadius: imageSize / 2,
+  };
+
   return (
-    <View style={styles.rootContainer}>
-      <Title>Game Over!</Title>
-      <View style={styles.imageContainer}>
-        <Image style={styles.image} source={require('../assets/images/success.png')}/>
+    <ScrollView style={styles.screen}>
+      <View style={styles.rootContainer}>
+        <Title>Game Over!</Title>
+        <View style={[styles.imageContainer, imageStyle]}>
+          <Image style={styles.image} source={require('../assets/images/success.png')}/>
+        </View>
+        <Text style={styles.summaryText}>
+          Your phone needed <Text style={styles.highlight}>{roundsNumber}</Text> rounds to guess the number <Text style={styles.highlight}>{userNumber}</Text>.
+        </Text>
+        <PrimaryButton onPress={onStartNewGame}>Start new game</PrimaryButton>
       </View>
-      <Text style={styles.summaryText}>
-        Your phone needed <Text style={styles.highlight}>{roundsNumber}</Text> rounds to guess the number <Text style={styles.highlight}>{userNumber}</Text>.
-      </Text>
-      <PrimaryButton onPress={onStartNewGame}>Start new game</PrimaryButton>
-    </View>
+    </ScrollView>
   );
 };
 
 export default GameOverScreen;
 
+
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
   rootContainer: {
     flex: 1,
     padding: 24,
@@ -32,11 +56,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
-    borderRadius: 150,
     borderWidth: 3,
     borderColor: Colors.accent500,
-    width: 300,
-    height: 300,
     overflow: 'hidden',
     margin: 36,
   },
